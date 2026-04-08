@@ -50,7 +50,7 @@ export default async function BookingDetailPage({
             <h1 className="text-xl font-bold text-gray-800">
               {booking.airbnbRef}
             </h1>
-            {process.env.SES_MOCK === "true" && (
+            {process.env["SES_MOCK"] === "true" && (
               <span className="text-xs bg-orange-100 text-orange-700 font-semibold px-2 py-0.5 rounded-full">
                 MOCK MODE
               </span>
