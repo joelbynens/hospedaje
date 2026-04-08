@@ -34,7 +34,7 @@ export default function LoginPage() {
       <div className="bg-white rounded-2xl shadow-md p-8 w-full max-w-sm">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Admin Login</h1>
         <p className="text-gray-500 text-sm mb-6">
-          City of Arts Valencia Flats
+          Casa El Hippo
         </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Guest Check-in | City of Arts Valencia Flats",
+  title: "Guest Check-in | Casa El Hippo",
   description: "Online check-in for your reservation",
 };
 

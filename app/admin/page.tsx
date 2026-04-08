@@ -15,12 +15,19 @@ function statusBadge(status: string) {
 export default async function AdminPage() {
   await checkAdminAuth();
 
-  const bookings = await prisma.booking.findMany({
-    orderBy: { createdAt: "desc" },
-    include: {
-      guests: { select: { status: true } },
-    },
-  });
+  let bookings: Awaited<ReturnType<typeof prisma.booking.findMany<{ include: { guests: { select: { status: true } } } }>>> = [];
+  let dbError: string | null = null;
+
+  try {
+    bookings = await prisma.booking.findMany({
+      orderBy: { createdAt: "desc" },
+      include: {
+        guests: { select: { status: true } },
+      },
+    });
+  } catch (e) {
+    dbError = e instanceof Error ? e.message : "Database connection failed";
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -30,7 +37,7 @@ export default async function AdminPage() {
             Hospedaje Admin
           </h1>
           <p className="text-sm text-gray-500">
-            City of Arts Valencia Flats by Rent Me
+            {process.env.ACCOMMODATION_NAME ?? "Casa El Hippo"}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -45,7 +52,21 @@ export default async function AdminPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 py-8">
-        {bookings.length === 0 ? (
+        {dbError && (
+          <div className="mb-6 bg-red-50 border border-red-200 rounded-xl p-5">
+            <p className="font-semibold text-red-800 mb-1">⚠ Database connection error</p>
+            <p className="text-sm text-red-700 mb-3">
+              The app cannot reach the database. Make sure the Supabase migration has been run
+              and that <code className="bg-red-100 px-1 rounded">DATABASE_URL</code> is set in
+              Vercel environment variables.
+            </p>
+            <details>
+              <summary className="text-xs text-red-500 cursor-pointer">Technical details</summary>
+              <pre className="mt-2 text-xs bg-red-100 p-2 rounded overflow-auto">{dbError}</pre>
+            </details>
+          </div>
+        )}
+        {!dbError && bookings.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-12 text-center">
             <p className="text-gray-500 text-lg">No bookings yet.</p>
             <Link

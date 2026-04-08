@@ -31,7 +31,7 @@ export default async function CheckinOverviewPage({
         <p className="text-gray-300 text-sm mt-1">Accommodation</p>
         <p className="text-white font-medium mt-0.5">
           {process.env.ACCOMMODATION_NAME ??
-            "City of Arts Valencia Flats by Rent Me"}
+            "Casa El Hippo"}
         </p>
         <div className="flex justify-center gap-12 mt-6 text-sm">
           <div>

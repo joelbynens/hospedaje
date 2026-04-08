@@ -78,7 +78,7 @@ function docTypeLabel(dt: string | null): string {
 
 export function AdmissionSheetPDF({ booking }: Props) {
   const accomName =
-    process.env.ACCOMMODATION_NAME ?? "City of Arts Valencia Flats by Rent Me";
+    process.env.ACCOMMODATION_NAME ?? "Casa El Hippo";
   const accomAddress = process.env.ACCOMMODATION_ADDRESS ?? "Avenida de Francia, 79";
   const accomPhone = process.env.ACCOMMODATION_PHONE ?? "+34851960468";
   const owner = process.env.ACCOMMODATION_OWNER ?? "Joel Bynens";

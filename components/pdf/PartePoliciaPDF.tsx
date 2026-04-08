@@ -82,7 +82,7 @@ function docTypeLabel(dt: string | null): string {
 
 export function PartePoliciaPDF({ booking, guest }: Props) {
   const accomName =
-    process.env.ACCOMMODATION_NAME ?? "City of Arts Valencia Flats by Rent Me";
+    process.env.ACCOMMODATION_NAME ?? "Casa El Hippo";
   const accomCity = process.env.ACCOMMODATION_CITY ?? "Valencia";
   const accomProvince = process.env.ACCOMMODATION_PROVINCE ?? "Valencia";
   const accomNIF = process.env.ACCOMMODATION_NIF ?? "Z0035609X";
