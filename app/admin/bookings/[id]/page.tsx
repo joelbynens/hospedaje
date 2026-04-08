@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { ResendSesButton } from "@/components/ResendSesButton";
+import { DeleteBookingButton } from "@/components/DeleteBookingButton";
 
 function guestStatusIcon(status: string) {
   return status === "COMPLETE" ? "✓" : "○";
@@ -41,13 +42,21 @@ export default async function BookingDetailPage({
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="max-w-3xl mx-auto flex items-center gap-3">
-          <Link href="/admin" className="text-gray-400 hover:text-gray-600">
-            ← Back
-          </Link>
-          <h1 className="text-xl font-bold text-gray-800">
-            {booking.airbnbRef}
-          </h1>
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/admin" className="text-gray-400 hover:text-gray-600">
+              ← Back
+            </Link>
+            <h1 className="text-xl font-bold text-gray-800">
+              {booking.airbnbRef}
+            </h1>
+            {process.env.SES_MOCK === "true" && (
+              <span className="text-xs bg-orange-100 text-orange-700 font-semibold px-2 py-0.5 rounded-full">
+                MOCK MODE
+              </span>
+            )}
+          </div>
+          <DeleteBookingButton bookingId={booking.id} />
         </div>
       </header>
 

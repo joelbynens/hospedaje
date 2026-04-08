@@ -30,10 +30,13 @@ export async function POST(
     );
   }
 
-  const { success, response } = await submitToSes({
-    ...booking,
-    guests: completeGuests,
-  });
+  const isMock = process.env.SES_MOCK === "true";
+  const { success, response } = isMock
+    ? {
+        success: true,
+        response: `[MOCK] SES submission simulated at ${new Date().toISOString()}. No real data was sent to SES.Hospedaje.`,
+      }
+    : await submitToSes({ ...booking, guests: completeGuests });
 
   // Update booking with SES response
   await prisma.booking.update({
