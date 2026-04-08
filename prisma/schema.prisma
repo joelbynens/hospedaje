@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  airbnbRef      String        @unique
+  checkinDate    DateTime
+  checkoutDate   DateTime
+  checkinTime    String        @default("16:00")
+  checkoutTime   String        @default("11:00")
+  numGuests      Int
+  paymentType    PaymentType   @default(PLATF)
+  token          String        @unique @default(cuid())
+  status         BookingStatus @default(PENDING)
+  sesSubmittedAt DateTime?
+  sesResponse    String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  guests         Guest[]
+}
+
+model Guest {
+  id               String      @id @default(cuid())
+  bookingId        String
+  booking          Booking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  sortOrder        Int         @default(0)
+  docType          DocType?
+  docNumber        String?
+  firstName        String?
+  surname1         String?
+  surname2         String?
+  sex              Sex?
+  birthDate        DateTime?
+  nationality      String?
+  residenceCountry String?
+  city             String?
+  postalCode       String?
+  address          String?
+  email            String?
+  phone            String?
+  signatureBase64  String?
+  status           GuestStatus @default(PENDING)
+  sesStatus        SesStatus   @default(PENDING)
+  sesResponse      String?
+  completedAt      DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  PARTIAL
+  COMPLETE
+}
+
+enum GuestStatus {
+  PENDING
+  COMPLETE
+}
+
+enum SesStatus {
+  PENDING
+  SENT
+  ERROR
+}
+
+enum PaymentType {
+  EFECT
+  TARJT
+  PLATF
+  TRANS
+  MOVIL
+  TREG
+  OTRO
+}
+
+enum DocType {
+  NIF
+  NIE
+  PAS
+  OTRO
+}
+
+enum Sex {
+  H
+  M
+  O
+}
