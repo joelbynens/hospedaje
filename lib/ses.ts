@@ -41,7 +41,7 @@ function mapDocType(docType: string | null): string {
 }
 
 async function zipAndEncode(xml: string): Promise<string> {
-  // SES expects a real PKZIP archive (not raw DEFLATE bytes), Base64-encoded
+  // SES spec requires the inner XML to be in a PKZIP archive, Base64-encoded
   const zip = new JSZip();
   zip.file("solicitud.xml", xml);
   const buf = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
@@ -205,7 +205,7 @@ async function callSes(
   const token = Buffer.from(`${usuario}:${password}`).toString("base64");
 
   // #region agent log
-  fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:callSes-start',message:'SES request about to be sent (ssl bypass active)',data:{endpoint,usuario,envelopePreview:envelope.slice(0,400)},timestamp:Date.now(),hypothesisId:'H-C,H-D'})}).catch(()=>{});
+  fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:callSes-start',message:'SES request about to be sent',data:{endpoint,usuario,compressMode:process.env.SES_COMPRESS??"zip",nsPrefix:process.env.SES_NS_PREFIX??"false",envelopeLength:envelope.length,envelopeHead:envelope.slice(0,600),envelopeTail:envelope.slice(-200)},timestamp:Date.now(),hypothesisId:'H-I,H-J'})}).catch(()=>{});
   // #endregion
 
   return new Promise((resolve) => {
