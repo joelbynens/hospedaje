@@ -35,32 +35,19 @@ export async function POST(
     guests: completeGuests,
   });
 
-  // #region agent log
-  fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses/submit/route.ts:after-submitToSes',message:'submitToSes result',data:{rhSuccess,pvSuccess,rhResponsePreview:rhResponse?.slice(0,300),pvResponsePreview:pvResponse?.slice(0,300)},timestamp:Date.now(),hypothesisId:'H-B,H-E'})}).catch(()=>{});
-  // #endregion
-
   const now = new Date();
 
-  // Always persist what we got back
-  try {
-    await prisma.booking.update({
-      where: { id: bookingId },
-      data: {
-        sesRhSubmittedAt: now,
-        sesRhResponse: rhResponse,
-        sesRhStatus: rhSuccess ? "SENT" : "ERROR",
-        ...(pvSuccess
-          ? { sesSubmittedAt: now, sesResponse: pvResponse }
-          : { sesResponse: pvResponse }),
-      },
-    });
-  } catch (dbErr) {
-    const dbMsg = dbErr instanceof Error ? dbErr.message : String(dbErr);
-    // #region agent log
-    fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses/submit/route.ts:db-update-error',message:'Prisma booking.update FAILED — migration likely not run',data:{error:dbMsg},timestamp:Date.now(),hypothesisId:'H-E'})}).catch(()=>{});
-    // #endregion
-    throw dbErr;
-  }
+  await prisma.booking.update({
+    where: { id: bookingId },
+    data: {
+      sesRhSubmittedAt: now,
+      sesRhResponse: rhResponse,
+      sesRhStatus: rhSuccess ? "SENT" : "ERROR",
+      ...(pvSuccess
+        ? { sesSubmittedAt: now, sesResponse: pvResponse }
+        : { sesResponse: pvResponse }),
+    },
+  });
 
   // Update per-guest PV status
   await prisma.guest.updateMany({

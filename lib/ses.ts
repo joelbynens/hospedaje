@@ -204,9 +204,6 @@ async function callSes(
   const password = process.env.SES_PASSWORD ?? "";
   const token = Buffer.from(`${usuario}:${password}`).toString("base64");
 
-  // #region agent log
-  fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:callSes-start',message:'SES request about to be sent',data:{endpoint,usuario,compressMode:process.env.SES_COMPRESS??"zip",nsPrefix:process.env.SES_NS_PREFIX??"false",envelopeLength:envelope.length,envelopeHead:envelope.slice(0,600),envelopeTail:envelope.slice(-200)},timestamp:Date.now(),hypothesisId:'H-I,H-J'})}).catch(()=>{});
-  // #endregion
 
   return new Promise((resolve) => {
     const url = new URL(endpoint);
@@ -235,19 +232,12 @@ async function callSes(
           const isOk =
             res.statusCode === 200 && !responseText.includes("<codigo>10");
 
-          // #region agent log
-          fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:callSes-response',message:'SES raw response received',data:{httpStatus:res.statusCode,isOk,responsePreview:responseText.slice(0,800)},timestamp:Date.now(),hypothesisId:'H-A,H-B,H-C,H-D'})}).catch(()=>{});
-          // #endregion
-
           resolve({ success: isOk, response: responseText });
         });
       }
     );
 
     req.on("error", (err) => {
-      // #region agent log
-      fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:callSes-error',message:'https.request error event',data:{error:err.message,code:(err as NodeJS.ErrnoException).code},timestamp:Date.now(),hypothesisId:'H-C'})}).catch(()=>{});
-      // #endregion
       resolve({ success: false, response: `Network error: ${err.message}` });
     });
 
@@ -262,11 +252,6 @@ export async function submitRh(
   booking: BookingWithGuests
 ): Promise<{ success: boolean; response: string }> {
   const innerXml = buildRhInnerXml(booking);
-
-  // #region agent log
-  fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:submitRh-innerXml',message:'RH inner XML before ZIP encoding',data:{innerXml},timestamp:Date.now(),hypothesisId:'H-F,H-G'})}).catch(()=>{});
-  // #endregion
-
   const base64 = await zipAndEncode(innerXml);
   const envelope = buildSoapEnvelope("RH", base64);
   return callSes(envelope);
