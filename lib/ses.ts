@@ -1,9 +1,6 @@
-import { deflateRaw } from "zlib";
-import { promisify } from "util";
 import https from "https";
+import JSZip from "jszip";
 import type { Booking, Guest } from "@prisma/client";
-
-const deflateRawAsync = promisify(deflateRaw);
 
 type BookingWithGuests = Booking & { guests: Guest[] };
 
@@ -44,7 +41,10 @@ function mapDocType(docType: string | null): string {
 }
 
 async function zipAndEncode(xml: string): Promise<string> {
-  const buf = await deflateRawAsync(Buffer.from(xml, "utf-8"));
+  // SES expects a real PKZIP archive (not raw DEFLATE bytes), Base64-encoded
+  const zip = new JSZip();
+  zip.file("solicitud.xml", xml);
+  const buf = await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
   return buf.toString("base64");
 }
 
@@ -262,6 +262,11 @@ export async function submitRh(
   booking: BookingWithGuests
 ): Promise<{ success: boolean; response: string }> {
   const innerXml = buildRhInnerXml(booking);
+
+  // #region agent log
+  fetch('http://127.0.0.1:7568/ingest/d46db812-6367-4853-8d06-242fe9bdaf04',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6c62ba'},body:JSON.stringify({sessionId:'6c62ba',location:'ses.ts:submitRh-innerXml',message:'RH inner XML before ZIP encoding',data:{innerXml},timestamp:Date.now(),hypothesisId:'H-F,H-G'})}).catch(()=>{});
+  // #endregion
+
   const base64 = await zipAndEncode(innerXml);
   const envelope = buildSoapEnvelope("RH", base64);
   return callSes(envelope);
