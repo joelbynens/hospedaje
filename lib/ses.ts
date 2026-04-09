@@ -169,13 +169,13 @@ function buildSoapEnvelope(
   tipoComunicacion: "PV" | "RH",
   solicitudBase64: string
 ): string {
-  const arrendador = process.env.SES_ARRENDADOR ?? "";
+  const codigoArrendador = process.env.SES_ARRENDADOR ?? "";
   return `<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns2="http://hospedajes.mir.es/hospedajes/ws/comunicaciones/v1">
   <soapenv:Body>
     <ns2:peticion>
       <cabecera>
-        <arrendador>${esc(arrendador)}</arrendador>
+        <codigoArrendador>${esc(codigoArrendador)}</codigoArrendador>
         <aplicacion>CasaElHippo</aplicacion>
         <tipoOperacion>A</tipoOperacion>
         <tipoComunicacion>${tipoComunicacion}</tipoComunicacion>
@@ -216,9 +216,8 @@ async function callSes(
         path: url.pathname + url.search,
         method: "POST",
         headers: {
-          "Content-Type": "text/xml; charset=utf-8",
+          "Content-Type": "application/soap+xml; charset=utf-8",
           Authorization: `Basic ${token}`,
-          SOAPAction: "",
           "Content-Length": bodyBuffer.byteLength,
         },
         agent: sesHttpsAgent,
