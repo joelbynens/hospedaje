@@ -5,6 +5,17 @@ import { useRouter } from "next/navigation";
 import { COUNTRIES } from "@/lib/countries";
 import type { Guest } from "@prisma/client";
 
+const PARENTESCO_OPTIONS = [
+  { value: "", label: "Not applicable" },
+  { value: "PA", label: "Father / Padre" },
+  { value: "MA", label: "Mother / Madre" },
+  { value: "HJ", label: "Son or daughter / Hijo/a" },
+  { value: "AB", label: "Grandfather / Abuelo/a" },
+  { value: "HE", label: "Brother or sister / Hermano/a" },
+  { value: "TT", label: "Uncle or aunt / Tío/a" },
+  { value: "OT", label: "Other / Otro" },
+];
+
 const DOC_TYPES = [
   { value: "PAS", label: "Passport" },
   { value: "NIF", label: "NIF (Spanish ID)" },
@@ -65,6 +76,7 @@ export function GuestDataForm({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [docType, setDocType] = useState<string>(guest.docType ?? "PAS");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -76,6 +88,7 @@ export function GuestDataForm({
       guestId: guest.id,
       docType: form.get("docType"),
       docNumber: form.get("docNumber"),
+      soporteDocumento: form.get("soporteDocumento") || null,
       firstName: form.get("firstName"),
       surname1: form.get("surname1"),
       surname2: form.get("surname2") || null,
@@ -88,6 +101,7 @@ export function GuestDataForm({
       address: form.get("address"),
       email: form.get("email"),
       phone: form.get("phone") || null,
+      parentesco: form.get("parentesco") || null,
     };
 
     const res = await fetch(`/api/checkin/${token}/guests`, {
@@ -155,6 +169,7 @@ export function GuestDataForm({
                   name="docType"
                   defaultValue={guest.docType ?? "PAS"}
                   required
+                  onChange={(e) => setDocType(e.target.value)}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {DOC_TYPES.map((d) => (
@@ -169,6 +184,25 @@ export function GuestDataForm({
                 required: true,
                 placeholder: "e.g. AB123456",
               })}
+
+              {(docType === "NIF" || docType === "NIE") && (
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">
+                    Document support number{" "}
+                    <span className="text-gray-400">(Required for NIF/NIE)</span>
+                  </label>
+                  <input
+                    name="soporteDocumento"
+                    defaultValue={guest.soporteDocumento ?? ""}
+                    required
+                    placeholder="e.g. AAA123456"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    The support number is printed on the back of the Spanish ID card (DNI/NIE).
+                  </p>
+                </div>
+              )}
 
               {field("Guest name", "firstName", {
                 required: true,
@@ -278,6 +312,28 @@ export function GuestDataForm({
                   }
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+              </div>
+
+              {/* Parentesco — only relevant when minors travel in the group */}
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">
+                  Relationship in group{" "}
+                  <span className="text-gray-400">(Required only if a minor travels with you)</span>
+                </label>
+                <select
+                  name="parentesco"
+                  defaultValue={guest.parentesco ?? ""}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {PARENTESCO_OPTIONS.map((p) => (
+                    <option key={p.value} value={p.value}>
+                      {p.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-gray-400 mt-1">
+                  Spanish law requires this when a minor (under 18) is part of your group.
+                </p>
               </div>
 
               {error && (

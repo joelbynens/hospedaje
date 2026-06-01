@@ -22,7 +22,9 @@
 
 # misc
 .DS_Store
+# Exclude private key PEM files, but allow the public FNMT CA certificate
 *.pem
+!certs/fnmt.pem
 
 # debug
 npm-debug.log*

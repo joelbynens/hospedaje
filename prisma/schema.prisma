@@ -19,9 +19,12 @@ model Booking {
   paymentType    PaymentType   @default(PLATF)
   token          String        @unique @default(cuid())
   status         BookingStatus @default(PENDING)
-  sesSubmittedAt DateTime?
-  sesResponse    String?
-  createdAt      DateTime      @default(now())
+  sesSubmittedAt   DateTime?
+  sesResponse      String?
+  sesRhSubmittedAt DateTime?
+  sesRhResponse    String?
+  sesRhStatus      SesStatus     @default(PENDING)
+  createdAt        DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   guests         Guest[]
 }
@@ -45,6 +48,8 @@ model Guest {
   address          String?
   email            String?
   phone            String?
+  soporteDocumento String?
+  parentesco       String?
   signatureBase64  String?
   status           GuestStatus @default(PENDING)
   sesStatus        SesStatus   @default(PENDING)

@@ -167,28 +167,89 @@ export default async function BookingDetailPage({
 
         {/* SES Submission */}
         <div className="bg-white rounded-xl shadow-sm p-6">
-          <h2 className="font-semibold text-gray-700 mb-3">
+          <h2 className="font-semibold text-gray-700 mb-4">
             SES.Hospedaje submission
           </h2>
-          {booking.sesSubmittedAt ? (
-            <p className="text-sm text-green-700">
-              ✓ Submitted on{" "}
-              {new Date(booking.sesSubmittedAt).toLocaleString("en-GB")}
-            </p>
-          ) : (
+
+          <div className="space-y-3 mb-4">
+            {/* RH status */}
+            <div className="flex items-start justify-between border border-gray-100 rounded-lg p-3">
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  1. Reserva de Hospedaje (RH)
+                </p>
+                {booking.sesRhSubmittedAt && (
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {new Date(booking.sesRhSubmittedAt).toLocaleString("en-GB")}
+                  </p>
+                )}
+              </div>
+              <span
+                className={`text-xs font-semibold px-2 py-0.5 rounded-full ${sesStatusBadge(booking.sesRhStatus ?? "PENDING")}`}
+              >
+                {booking.sesRhStatus ?? "PENDING"}
+              </span>
+            </div>
+
+            {/* PV status */}
+            <div className="flex items-start justify-between border border-gray-100 rounded-lg p-3">
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  2. Parte de Viajeros (PV)
+                </p>
+                {booking.sesSubmittedAt && (
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    {new Date(booking.sesSubmittedAt).toLocaleString("en-GB")}
+                  </p>
+                )}
+              </div>
+              <span
+                className={`text-xs font-semibold px-2 py-0.5 rounded-full ${sesStatusBadge(
+                  booking.guests.every((g) => g.sesStatus === "SENT")
+                    ? "SENT"
+                    : booking.guests.some((g) => g.sesStatus === "ERROR")
+                      ? "ERROR"
+                      : "PENDING"
+                )}`}
+              >
+                {booking.guests.every((g) => g.sesStatus === "SENT")
+                  ? "SENT"
+                  : booking.guests.some((g) => g.sesStatus === "ERROR")
+                    ? "ERROR"
+                    : "PENDING"}
+              </span>
+            </div>
+          </div>
+
+          {!allComplete && (
             <p className="text-sm text-gray-500 mb-3">
-              Not yet submitted. Complete all guest registrations first.
+              Complete all guest registrations before submitting.
             </p>
           )}
+
           <ResendSesButton
             bookingId={booking.id}
             disabled={!allComplete}
             label={booking.sesSubmittedAt ? "Re-send to SES" : "Send to SES"}
           />
-          {booking.sesResponse && (
+
+          {/* RH response */}
+          {booking.sesRhResponse && (
             <details className="mt-3">
               <summary className="text-xs text-gray-400 cursor-pointer">
-                View SES response
+                RH response
+              </summary>
+              <pre className="mt-2 text-xs bg-gray-50 border rounded p-2 overflow-auto max-h-40 text-gray-600">
+                {booking.sesRhResponse}
+              </pre>
+            </details>
+          )}
+
+          {/* PV response */}
+          {booking.sesResponse && (
+            <details className="mt-2">
+              <summary className="text-xs text-gray-400 cursor-pointer">
+                PV response
               </summary>
               <pre className="mt-2 text-xs bg-gray-50 border rounded p-2 overflow-auto max-h-40 text-gray-600">
                 {booking.sesResponse}

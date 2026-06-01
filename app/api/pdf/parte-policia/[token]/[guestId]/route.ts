@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { PartePoliciaPDF } from "@/components/pdf/PartePoliciaPDF";
 import React from "react";
 
+export const maxDuration = 60;
+
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ token: string; guestId: string }> }

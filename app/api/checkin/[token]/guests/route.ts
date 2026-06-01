@@ -33,6 +33,7 @@ export async function PUT(
     data: {
       docType: data.docType,
       docNumber: data.docNumber,
+      soporteDocumento: data.soporteDocumento ?? null,
       firstName: data.firstName,
       surname1: data.surname1,
       surname2: data.surname2 ?? null,
@@ -45,6 +46,7 @@ export async function PUT(
       address: data.address,
       email: data.email,
       phone: data.phone ?? null,
+      parentesco: data.parentesco ?? null,
     },
   });
 

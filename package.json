@@ -7,7 +7,10 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "ses:preprod": "SES_MOCK=false SES_ENDPOINT=https://hospedajes.pre-ses.mir.es/hospedajes-web/ws/v1/comunicacion node scripts/test-ses.mjs",
+    "ses:prod": "SES_MOCK=false SES_ENDPOINT=https://hospedajes.ses.mir.es/hospedajes-web/ws/v1/comunicacion node scripts/test-ses.mjs",
+    "ses:dry": "SES_MOCK=true node scripts/test-ses.mjs"
   },
   "dependencies": {
     "@prisma/client": "5.22.0",
