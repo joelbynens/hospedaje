@@ -89,7 +89,6 @@ function buildPvPersonaXml(guest: Guest): string {
       ${buildDireccionXml(guest)}
       ${guest.phone ? `<telefono>${esc(guest.phone)}</telefono>` : ""}
       ${guest.email ? `<correo>${esc(guest.email)}</correo>` : ""}
-      ${guest.parentesco ? `<parentesco>${esc(guest.parentesco)}</parentesco>` : ""}
     </persona>`;
 }
 

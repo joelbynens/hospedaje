@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CopyLinkButton } from "@/components/CopyLinkButton";
 import { ResendSesButton } from "@/components/ResendSesButton";
 import { DeleteBookingButton } from "@/components/DeleteBookingButton";
+import { GuestList } from "@/components/GuestList";
 
 function guestStatusIcon(status: string) {
   return status === "COMPLETE" ? "✓" : "○";
@@ -127,41 +128,7 @@ export default async function BookingDetailPage({
               No guests yet — they will appear here once the check-in link is opened.
             </p>
           ) : (
-            <div className="space-y-3">
-              {booking.guests.map((guest, i) => (
-                <div
-                  key={guest.id}
-                  className="flex items-center justify-between border border-gray-100 rounded-lg p-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`text-lg font-bold ${
-                        guest.status === "COMPLETE"
-                          ? "text-blue-600"
-                          : "text-orange-400"
-                      }`}
-                    >
-                      {guestStatusIcon(guest.status)}
-                    </span>
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">
-                        {guest.firstName && guest.surname1
-                          ? `${guest.surname1} ${guest.firstName}`
-                          : `Guest ${i + 1}`}
-                      </p>
-                      {guest.email && (
-                        <p className="text-xs text-gray-500">{guest.email}</p>
-                      )}
-                    </div>
-                  </div>
-                  <span
-                    className={`text-xs font-semibold px-2 py-0.5 rounded-full ${sesStatusBadge(guest.sesStatus)}`}
-                  >
-                    SES: {guest.sesStatus}
-                  </span>
-                </div>
-              ))}
-            </div>
+            <GuestList guests={booking.guests} />
           )}
         </div>
 
