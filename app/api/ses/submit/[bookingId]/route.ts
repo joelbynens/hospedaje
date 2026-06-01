@@ -37,16 +37,22 @@ export async function POST(
 
   const now = new Date();
 
+  const updateData: Record<string, any> = {
+    sesRhSubmittedAt: now,
+    sesRhResponse: rhResponse,
+    sesRhStatus: rhSuccess ? "SENT" : "ERROR",
+  };
+
+  if (pvSuccess) {
+    updateData.sesSubmittedAt = now;
+    updateData.sesResponse = pvResponse;
+  } else {
+    updateData.sesResponse = pvResponse;
+  }
+
   await prisma.booking.update({
     where: { id: bookingId },
-    data: {
-      sesRhSubmittedAt: now,
-      sesRhResponse: rhResponse,
-      sesRhStatus: rhSuccess ? "SENT" : "ERROR",
-      ...(pvSuccess
-        ? { sesSubmittedAt: now, sesResponse: pvResponse }
-        : { sesResponse: pvResponse }),
-    },
+    data: updateData,
   });
 
   // Update per-guest PV status

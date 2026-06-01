@@ -105,7 +105,7 @@ function buildPvInnerXml(booking: BookingWithGuests): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <alt:peticion xmlns:alt="http://www.neg.hospedajes.mir.es/altaParteHospedaje">
   <solicitud>
-    <codigoEstablecimiento>${esc(process.env.SES_ESTABLECIMIENTO)}</codigoEstablecimiento>
+    <codigoEstablecimiento>${esc((process.env.SES_ESTABLECIMIENTO ?? "").trim())}</codigoEstablecimiento>
     <comunicacion>
       <contrato>
         <referencia>${esc(booking.airbnbRef)}</referencia>
@@ -161,7 +161,7 @@ function buildRhInnerXml(booking: BookingWithGuests): string {
   <solicitud>
     <comunicacion>
       <establecimiento>
-        <codigo>${esc(process.env.SES_ESTABLECIMIENTO)}</codigo>
+        <codigo>${esc((process.env.SES_ESTABLECIMIENTO ?? "").trim())}</codigo>
       </establecimiento>
       <contrato>
         <referencia>${esc(booking.airbnbRef)}</referencia>
@@ -194,7 +194,7 @@ function buildSoapEnvelope(
   tipoComunicacion: "PV" | "RH",
   solicitudBase64: string
 ): string {
-  const codigoArrendador = process.env.SES_ARRENDADOR ?? "";
+  const codigoArrendador = (process.env.SES_ARRENDADOR ?? "").trim();
   return `<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:com="http://www.soap.servicios.hospedajes.mir.es/comunicacion">
   <soapenv:Body>
@@ -253,11 +253,12 @@ const sesHttpsAgent = buildSesAgent();
 async function callSes(
   envelope: string
 ): Promise<{ success: boolean; response: string }> {
+  // .trim() guards against trailing newlines from Vercel env var copy-paste
   const endpoint =
-    process.env.SES_ENDPOINT ??
-    "https://hospedajes.ses.mir.es/hospedajes-web/ws/v1/comunicacion";
-  const usuario = process.env.SES_USUARIO ?? "";
-  const password = process.env.SES_PASSWORD ?? "";
+    (process.env.SES_ENDPOINT?.trim() ??
+    "https://hospedajes.ses.mir.es/hospedajes-web/ws/v1/comunicacion").trim();
+  const usuario = (process.env.SES_USUARIO ?? "").trim();
+  const password = (process.env.SES_PASSWORD ?? "").trim();
   const token = Buffer.from(`${usuario}:${password}`).toString("base64");
   const url = new URL(endpoint);
   const body = Buffer.from(envelope, "utf-8");
