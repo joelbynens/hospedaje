@@ -84,6 +84,16 @@ export function GuestDataForm({
     setError("");
 
     const form = new FormData(e.currentTarget);
+    const email = form.get("email");
+    const phone = form.get("phone");
+
+    // Per SES spec: must have at least one contact method (email OR phone)
+    if (!email && !phone) {
+      setError("Please provide either an email address or a phone number.");
+      setLoading(false);
+      return;
+    }
+
     const data = {
       guestId: guest.id,
       docType: form.get("docType"),
@@ -239,14 +249,17 @@ export function GuestDataForm({
 
               {field("Notification email", "email", {
                 type: "email",
-                required: true,
+                required: false,
                 placeholder: "guest@email.com",
               })}
-              {field("Phone (optional)", "phone", {
+              {field("Phone", "phone", {
                 type: "tel",
                 required: false,
                 placeholder: "+32...",
               })}
+              <p className="text-xs text-gray-400">
+                Please provide either an email address or a phone number.
+              </p>
 
               {/* Residence country */}
               <div>
