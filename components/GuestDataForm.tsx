@@ -215,17 +215,17 @@ export function GuestDataForm({
                 </div>
               )}
 
-              {field("Guest name", "firstName", {
+              {field("First name / Nombre", "firstName", {
                 required: true,
-                placeholder: "First name",
+                placeholder: "e.g. Ewa Charlotte",
               })}
-              {field("Guest first surname", "surname1", {
+              {field("First surname / Primer apellido", "surname1", {
                 required: true,
-                placeholder: "First surname",
+                placeholder: "e.g. Berglund",
               })}
-              {field("Guest second surname", "surname2", {
+              {field("Second surname / Segundo apellido", "surname2", {
                 required: false,
-                placeholder: "Second surname (optional)",
+                placeholder: "Optional / Opcional",
               })}
 
               {/* Sex */}
