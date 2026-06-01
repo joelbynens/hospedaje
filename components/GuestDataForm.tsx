@@ -8,11 +8,11 @@ import type { Guest } from "@prisma/client";
 const PARENTESCO_OPTIONS = [
   { value: "", label: "Not applicable" },
   { value: "PA", label: "Father / Padre" },
-  { value: "MA", label: "Mother / Madre" },
+  { value: "MD", label: "Mother / Madre" },
   { value: "HJ", label: "Son or daughter / Hijo/a" },
   { value: "AB", label: "Grandfather / Abuelo/a" },
-  { value: "HE", label: "Brother or sister / Hermano/a" },
-  { value: "TT", label: "Uncle or aunt / Tío/a" },
+  { value: "HM", label: "Brother or sister / Hermano/a" },
+  { value: "TI", label: "Uncle or aunt / Tío/a" },
   { value: "OT", label: "Other / Otro" },
 ];
 
@@ -331,21 +331,22 @@ export function GuestDataForm({
               <div>
                 <label className="block text-xs text-gray-500 mb-1">
                   Relationship in group{" "}
-                  <span className="text-gray-400">(Required only if a minor travels with you)</span>
+                  <span className="text-gray-400">(Leave blank unless a minor travels with you)</span>
                 </label>
                 <select
                   name="parentesco"
                   defaultValue={guest.parentesco ?? ""}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  {PARENTESCO_OPTIONS.map((p) => (
+                  <option value="">Not applicable / Leave blank</option>
+                  {PARENTESCO_OPTIONS.slice(1).map((p) => (
                     <option key={p.value} value={p.value}>
                       {p.label}
                     </option>
                   ))}
                 </select>
                 <p className="text-xs text-gray-400 mt-1">
-                  Spanish law requires this when a minor (under 18) is part of your group.
+                  Only fill this if a minor (under 18) is in your group. Leave blank for groups with only adults.
                 </p>
               </div>
 
