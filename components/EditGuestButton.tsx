@@ -109,7 +109,7 @@ export function EditGuestButton({ guest, onSaved }: { guest: Guest; onSaved: () 
                 <label className="block text-xs text-gray-500 mb-1">Document type</label>
                 <select
                   value={form.docType}
-                  onChange={(e) => setForm({ ...form, docType: e.target.value })}
+                  onChange={(e) => setForm({ ...form, docType: e.target.value as "PAS" | "NIF" | "NIE" | "OTRO" })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {DOC_TYPES.map((d) => (
@@ -124,7 +124,7 @@ export function EditGuestButton({ guest, onSaved }: { guest: Guest; onSaved: () 
                 <label className="block text-xs text-gray-500 mb-1">Sex</label>
                 <select
                   value={form.sex}
-                  onChange={(e) => setForm({ ...form, sex: e.target.value })}
+                  onChange={(e) => setForm({ ...form, sex: e.target.value as "H" | "M" | "O" })}
                   className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Select…</option>
