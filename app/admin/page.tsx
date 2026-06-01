@@ -22,7 +22,10 @@ export default async function AdminPage() {
     bookings = await prisma.booking.findMany({
       orderBy: { createdAt: "desc" },
       include: {
-        guests: { select: { status: true } },
+        guests: {
+          select: { status: true, firstName: true, surname1: true, sortOrder: true },
+          orderBy: { sortOrder: "asc" },
+        },
       },
     });
   } catch (e) {
@@ -83,6 +86,10 @@ export default async function AdminPage() {
                 (g) => g.status === "COMPLETE"
               ).length;
               const total = booking.guests.length;
+              const mainGuest = booking.guests.find((g) => g.status === "COMPLETE");
+              const guestName = mainGuest
+                ? [mainGuest.firstName, mainGuest.surname1].filter(Boolean).join(" ")
+                : null;
 
               return (
                 <Link
@@ -102,6 +109,11 @@ export default async function AdminPage() {
                           {booking.status}
                         </span>
                       </div>
+                      {guestName && (
+                        <p className="text-sm font-medium text-gray-700 mt-0.5">
+                          {guestName}
+                        </p>
+                      )}
                       <p className="text-sm text-gray-500 mt-1">
                         {new Date(booking.checkinDate).toLocaleDateString(
                           "en-GB"
