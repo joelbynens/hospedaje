@@ -7,12 +7,13 @@ import type { Guest } from "@prisma/client";
 
 const PARENTESCO_OPTIONS = [
   { value: "", label: "Not applicable" },
-  { value: "PA", label: "Father / Padre" },
-  { value: "MD", label: "Mother / Madre" },
+  { value: "PM", label: "Father or mother / Padre o madre" },
   { value: "HJ", label: "Son or daughter / Hijo/a" },
-  { value: "AB", label: "Grandfather / Abuelo/a" },
-  { value: "HM", label: "Brother or sister / Hermano/a" },
+  { value: "AB", label: "Grandparent / Abuelo/a" },
+  { value: "HR", label: "Brother or sister / Hermano/a" },
   { value: "TI", label: "Uncle or aunt / Tío/a" },
+  { value: "CY", label: "Spouse / Cónyuge" },
+  { value: "TU", label: "Tutor / Tutor/a" },
   { value: "OT", label: "Other / Otro" },
 ];
 
