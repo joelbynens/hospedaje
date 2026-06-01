@@ -20,7 +20,7 @@ export default async function AdminPage() {
 
   try {
     bookings = await prisma.booking.findMany({
-      orderBy: { createdAt: "desc" },
+      orderBy: { checkinDate: "desc" },
       include: {
         guests: {
           select: { status: true, firstName: true, surname1: true, sortOrder: true },
