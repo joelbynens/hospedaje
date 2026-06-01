@@ -15,7 +15,7 @@ function statusBadge(status: string) {
 export default async function AdminPage() {
   await checkAdminAuth();
 
-  let bookings: Awaited<ReturnType<typeof prisma.booking.findMany<{ include: { guests: { select: { status: true } } } }>>> = [];
+  let bookings: Awaited<ReturnType<typeof prisma.booking.findMany<{ include: { guests: { select: { status: true; firstName: true; surname1: true; sortOrder: true } } } }>>> = [];
   let dbError: string | null = null;
 
   try {
@@ -26,6 +26,7 @@ export default async function AdminPage() {
           select: { status: true, firstName: true, surname1: true, sortOrder: true },
           orderBy: { sortOrder: "asc" },
         },
+
       },
     });
   } catch (e) {
