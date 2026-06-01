@@ -33,8 +33,8 @@ export async function POST() {
     const testGuest: Guest = {
       id: "test-guest-001",
       bookingId: "test-booking-001",
-      firstName: "Test",
-      surname1: "Viajero",
+      firstName: "Juan",
+      surname1: "García",
       surname2: null,
       docType: "PAS",
       docNumber: "AB123456",
@@ -50,10 +50,13 @@ export async function POST() {
       email: "test@example.com",
       parentesco: null,
       status: "COMPLETE",
-      sesStatus: null,
+      sesStatus: "PENDING",
       sesResponse: null,
       createdAt: now,
       updatedAt: now,
+      sortOrder: 0,
+      signatureBase64: null,
+      completedAt: null,
     };
 
     // Test booking data
@@ -67,13 +70,14 @@ export async function POST() {
       checkoutTime: "11:00",
       numGuests: 1,
       paymentType: "PLATF",
-      notes: null,
       sesRhSubmittedAt: null,
-      sesRhStatus: null,
+      sesRhStatus: "PENDING",
       sesRhResponse: null,
       sesSubmittedAt: null,
       sesResponse: null,
       updatedAt: now,
+      token: "test-token",
+      status: "COMPLETE",
       guests: [testGuest],
     };
 
